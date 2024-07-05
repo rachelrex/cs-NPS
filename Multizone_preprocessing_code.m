@@ -1,3 +1,7 @@
+%this code takes data saved after cs-NPS experimental runs 
+
+%% 1. calculate Resistance
+
 numZones=6; %num zones recorded
 numZonesi=3; %num zones of interest 
 I = transpose(data(1:numZones+1:end) * ampsPerVolt);
@@ -32,15 +36,9 @@ end
 
 R = V ./ I;
 
-%% Optional tiled plotting
-figure
-tiledlayout(3,1)
-ax1=nexttile; plot(V(:,1))
-ax2=nexttile; plot(V(:,2),'k')
-ax3=nexttile; plot(V(:,3),'r')
-linkaxes([ax1 ax2 ax3],'x')
 
-%% 5. Filter Resistance Signals --------------------------------------------
+
+%% 2. Filter Resistance Signals --------------------------------------------
 fpass = 50; % passband frequency of the lowpass filter (in Hz)
 window = 31; % averaging window width (in units of samples) 
 window2= 71;
@@ -90,9 +88,8 @@ Rf=Rfalt1;
 
 
 
-%% for high noise - try running this 
-Rfalt2=Rfalt4;
-%% plotting
+
+%% 3. plotting
 
 
 
@@ -114,7 +111,7 @@ Rf=Rfalt1;
 
 
 
-%% get stderror
+%% 4. Get stderror
 
  %pick region for stdev calculation --> uncomment when you are doing the
  stderror=zeros(1,3);
@@ -138,7 +135,7 @@ Rf=Rfalt1;
             stderror(1,i)=std(Rf(startstd:endstd,i));
          end
 
-%% fit baseline
+%% 5. and 9. fit baseline
 %for asls if not downsampled 
 lambda1 = 1e12; %larger means smoother background 
 % lambda2=1e5;
@@ -179,7 +176,8 @@ end
 load chirp 
 y=y(1:2458,:); 
 sound(y,Fs);
-%% plot yasls results 
+%% plot yasls results - OPTIONAL - just for visualization
+
 figure
 tiledlayout(3,1)
 ax1=nexttile; plot(yasls(:,1))
@@ -204,7 +202,7 @@ linkaxes([ax1 ax2 ax3],'x')
 
 
     
- %% subtract baseline_replot
+ %% 6. and 10. subtract baseline_replot
 f1=figure;
 hold on
 for i=1:numZonesi 
@@ -217,16 +215,17 @@ for i=1:numZonesi
 end
 
 %stop here and save your pre-processed data 
-%% calculate noise again- use same region as before
-%pick region for stdev calculation --> uncomment when you are doing the
+%% 7a. calculate noise again- use same region as before
+%you can use either 7a or 7b to recalculate the "zeroed" noise- this one is
+%less work 
 
          for i=1:3
             stderror(2,i)=std(ydetrend(startstd:endstd,i));
    
          end
 
-%% calculate noise again
-%pick region for stdev calculation --> uncomment when you are doing the
+%% 7b. calculate noise again
+%pick region for stdev calculation 
 
        d=datacursormode(f1);
           d.Enable='on';
@@ -253,65 +252,9 @@ end
 
 
 
-%% reset stderror
+%% 8. reset stderror
 
 stderror(1,:)=stderror(2,:)
 
-%% try subtracting zone noise from each other 
-
-y
-   
-
-% %% pick pulse to analyze 
-% wp=16000;
-%  d=datacursormode(f1);
-%  d.Enable='on';
-%  d.DisplayStyle='window';
-%  startxchosen=input('click where you want region to start, then press enter');
-% if isempty(startxchosen)==1
-%     vals=getCursorInfo(d);
-%     startv=vals.Position(1,1);
-% end
-% d.Enable='off';
-% 
-% 
-% 
-% f2=figure;
-% sz=10;
-% tl=tiledlayout('flow');
-% 
-% ax1=nexttile;
-% hold(ax1,'on')
-% scatter(t(startv-100:startv+wp,1),ydetrend(startv-100:startv+wp,1),sz,'m')
-% plot(t(startv-100:startv+wp,1),ydetrend(startv-100:startv+wp,1),'m')
-% scatter(t(startv-100:startv+wp,1),ydetrend(startv-100:startv+wp,2),sz,'k')
-% plot(t(startv-100:startv+wp,1),ydetrend(startv-100:startv+wp,2),'k')
-% scatter(t(startv-100:startv+wp,1),ydetrend(startv-100:startv+wp,3),sz,'b')
-% plot(t(startv-100:startv+wp,1),ydetrend(startv-100:startv+wp,3),'b')
-% 
-% pulses=zeros(1,8);
-% s=1;
-% e=0;
-% for i=1:8
-%  d=datacursormode(f2);
-%  d.Enable='on';
-%  d.DisplayStyle='window';
-%  startxchosen=input('click to record a point and then press enter');
-% if isempty(startxchosen)==1
-%     vals=getCursorInfo(d);
-%     pulses(1,i)=vals.Position(1,1);
-% end
-% d.Enable='off';
-%        
-%     
-% end
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
+% go back to (9)"fit baseline" section after this and proceed until
+% (10)"subtract baseline_replot", then save your workspace 
