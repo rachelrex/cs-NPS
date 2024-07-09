@@ -1,4 +1,10 @@
 %this code takes data saved after cs-NPS experimental runs 
+% 1st load your raw data into the workspace, the files in your workspace
+% which are required are: data, sampleRate, ampsPerVolt (these should all
+% be generated during your cs-NPS experimental run by the
+% run_MultizoneNPS.m code) 
+% 2nd run each section in order (according to number at the beginning of
+% each section), DO NOT just RUN THE ENTIRE CODE- always run in SECTIONS!
 
 %% 1. calculate Resistance
 
